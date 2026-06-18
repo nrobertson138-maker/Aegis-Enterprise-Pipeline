@@ -1,0 +1,3 @@
+Risk_ID,Timestamp_UTC,Asset_Name,Asset_Criticality,Attack_Vector,MITRE_ID,Firewall_Posture,IAM_Status,CVSS_Base_Score,Inherent_Risk_Score,Inherent_Risk_Rating,Annualized_Loss_Expectancy,SOX_404_Status,NIST_Control_Mapping
+EVT-2026-050b3598,2026-06-18T05:01:11.442722Z,localhost.localdomain,Low,SSH Brute Force,T1110,Degraded,Anomalous Access Detected,8.6,9.9,MEDIUM,"$99,000",FAIL,PR.PT-4 (Network Boundary)
+EVT-2026-4bc36563,2026-06-18T05:42:09.776445Z,localhost.localdomain,Low,SSH Brute Force,T1110,Degraded,Anomalous Access Detected,8.6,9.9,MEDIUM,"$99,000",FAIL,PR.PT-4 (Network Boundary)

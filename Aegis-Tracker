@@ -1,0 +1,50 @@
+def trigger_incident_response(self, identifier, attack_type):
+        alert_time = datetime.utcnow().isoformat() + "Z"
+        unique_id = hashlib.md5(f"{alert_time}-{identifier}".encode()).hexdigest()[:8]
+        
+        # Simulate a Continuous Control Monitoring (CCM) check on the fly
+        ccm_firewall_status = "Degraded" if attack_type == "SSH Brute Force" else "Compliant"
+        
+        # FULL-SPECTRUM ARCHITECTURE SCHEMA PAYLOAD
+        alert_payload = {
+            "telemetry_metadata": {
+                "event_id": f"EVT-{datetime.utcnow().year}-{unique_id}",
+                "timestamp_utc": alert_time,
+                "origin_host": self.hostname,
+                "operating_system": "Rocky Linux 9"
+            },
+            "security_incident_details": {
+                "attack_vector": attack_type,
+                "mitre_attack_id": "T1110" if attack_type == "SSH Brute Force" else "T1548",
+                "target_identifier": identifier,
+                "threshold_crossed": f"{THRESHOLD_ATTEMPTS} attempts within {TIME_WINDOW_SECONDS}s",
+                "raw_cvss_base_score": 8.6 if attack_type == "SSH Brute Force" else 7.5
+            },
+            "continuous_control_audit": {
+                "firewall_posture": ccm_firewall_status,
+                "crypto_posture": "Compliant"
+            },
+            "identity_context": {
+                "flagged_user_account": identifier if attack_type == "Unauthorized Sudo Attempt" else "root",
+                "iam_status": "Anomalous Access Detected"
+            }
+        }
+        
+        # CONSOLE TELEMETRY NOTIFICATION
+        print(f"[CRITICAL INTERVENTION] Full-spectrum audit alert generated for {attack_type}.")
+        
+        # LOCAL INTER-PROCESS PIPELINE INTERFACE
+        # Appends the schema package locally for the Risk Register pipeline to ingest
+        with open("telemetry_exchange.json", "a") as exchange_file:
+            exchange_file.write(json.dumps(alert_payload) + "\n")
+            
+        # CLOUD PIPELINE ARCHIVAL (IMMUTABLE AUDIT TRAIL)
+        # Formats the S3 object prefix hierarchy cleanly by date for log indexing
+        date_path = datetime.utcnow().strftime('%Y/%m/%d')
+        object_name = f"alerts/{self.hostname}/{date_path}/incident_{unique_id}.json"
+        self.forward_to_s3(alert_payload, object_name)
+        
+        # THRESHOLD MEMORY RECOVERY
+        # Evicts the tracker array for this identity to reset the window for future checks
+        if identifier in self.ip_tracker:
+            del self.ip_tracker[identifier]
