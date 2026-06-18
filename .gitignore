@@ -1,0 +1,6 @@
+telemetry_exchange.json
+enterprise_risk_register.csv
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
